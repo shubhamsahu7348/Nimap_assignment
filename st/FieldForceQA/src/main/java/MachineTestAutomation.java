@@ -35,12 +35,12 @@ public class MachineTestAutomation {
         emailField.sendKeys(mcabuddyy@gmail.com);
         
         // Locate and fill password
-        WebElement passField = driver.findElement(By.id("_r_2_")); // UPDATE THIS ID
+        WebElement passField = driver.findElement(By.id("_r_2_")); 
         passField.clear();
         passField.sendKeys(123456789);
         
         // Click SignIn
-        driver.findElement(By.xpath("///*[@id=\"root\"]/div[2]/span[2]/div/div[2]/form/div[4]")).click(); // UPDATE THIS XPATH
+        driver.findElement(By.xpath("///*[@id=\"root\"]/div[2]/span[2]/div/div[2]/form/div[4]")).click(); 
 
         // Validation: Verify dashboard loads
         wait.until(ExpectedConditions.urlContains("dashboard"));
@@ -50,10 +50,10 @@ public class MachineTestAutomation {
     @Test(priority = 2, dependsOnMethods = "automateLogin")
     public void verifyPunchInToast() {
         // Click Punch In
-        driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]")).click(); // UPDATE THIS XPATH
+        driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]")).click();
 
         // Capture Toast Message
-        WebElement toast = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("toast-message"))); // UPDATE THIS CLASSNAME
+        WebElement toast = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("toast-message"))); 
         String toastText = toast.getText();
         
         // Validation
@@ -63,26 +63,26 @@ public class MachineTestAutomation {
     @Test(priority = 3, dependsOnMethods = "automateLogin", dataProvider = "customerData")
     public void addCustomer(String name, String phone, String email) {
         // Navigate to Customers menu
-        driver.findElement(By.id("//*[@id=\"root\"]/div[2]/div/div[1]/div[2]/div[2]/a/span")).click(); // UPDATE THIS ID
-        driver.findElement(By.id("/html/body/div[2]/div[3]/ul/li[1]/span")).click(); // UPDATE THIS ID
+        driver.findElement(By.id("//*[@id=\"root\"]/div[2]/div/div[1]/div[2]/div[2]/a/span")).click(); 
+        driver.findElement(By.id("/html/body/div[2]/div[3]/ul/li[1]/span")).click(); 
 
         // Fill Form
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("_r_3d_"))).sendKeys(vijay); // UPDATE THIS ID
-        driver.findElement(By.xpath("_r_3g_")).sendKeys(7348537852); // UPDATE THIS ID
-        driver.findElement(By.id("_r_3j_")).sendKeys(shubhamsahu5nov2016@gmail.com); // UPDATE THIS ID
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("_r_3d_"))).sendKeys(vijay); 
+        driver.findElement(By.xpath("_r_3g_")).sendKeys(7348537852); 
+        driver.findElement(By.id("_r_3j_")).sendKeys(shubhamsahu5nov2016@gmail.com);
         
         // Submit
-        driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/button[2]")).click(); // UPDATE THIS ID
+        driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/button[2]")).click();
 
         // Validate Success
-        WebElement successAlert = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("success-alert"))); // UPDATE THIS ID
+        WebElement successAlert = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("success-alert"))); 
         Assert.assertTrue(successAlert.isDisplayed(), "Customer addition failed.");
     }
 
     @DataProvider(name = "loginData")
     public Object[][] getLoginData() {
         return new Object[][] {
-            {"mcabuddyy@gmail.com", "123456789"} // UPDATE WITH GIVEN CREDENTIALS
+            {"mcabuddyy@gmail.com", "123456789"} 
         };
     }
 
