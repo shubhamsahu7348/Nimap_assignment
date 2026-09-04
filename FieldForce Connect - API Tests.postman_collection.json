@@ -1,0 +1,271 @@
+{
+  "info": {
+    "_postman_id": "343bc50c-64a8-4ce0-b815-ff1da769388c",
+    "name": "FieldForce Connect - API Tests",
+    "description": "API test suite for FieldForce Connect. Covers authentication (valid & invalid login) and customer management (add customer). Uses the 'FieldForce Connect - Test Env' environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57948751",
+    "_collection_link": "https://go.postman.co/collection/57948751-343bc50c-64a8-4ce0-b815-ff1da769388c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login - Valid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has Status field\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"Status\");",
+                  "});",
+                  "",
+                  "pm.test(\"Login is successful (Status 200 in body)\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.Status).to.eql(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains auth token or data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"data\");",
+                  "});",
+                  "",
+                  "// Save token to environment if present",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.data && jsonData.data.token) {",
+                  "    pm.environment.set(\"authToken\", jsonData.data.token);",
+                  "    console.log(\"Auth token saved to environment.\");",
+                  "} else if (jsonData && jsonData.data && typeof jsonData.data === \"string\" && jsonData.data.length > 10) {",
+                  "    pm.environment.set(\"authToken\", jsonData.data);",
+                  "    console.log(\"Auth token saved to environment.\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "Sends a POST request with valid credentials. On success, extracts the auth token from the response and stores it in the `authToken` environment variable for use in subsequent requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Invalid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP status code is 200 (API wraps errors in 200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body Status is 401 Unauthorized\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.Status).to.eql(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains error message\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"Message\");",
+                  "    pm.expect(jsonData.Message).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"No auth token returned for invalid login\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.eql(\"\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invalid@example.com\",\n  \"password\": \"WrongPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "Sends a POST request with deliberately incorrect credentials to verify the API returns an unauthorized/error response."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer Management",
+      "item": [
+        {
+          "name": "Add Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has Status field\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"Status\");",
+                  "});",
+                  "",
+                  "pm.test(\"Customer added successfully (Status 200 in body)\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.Status).to.eql(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains data field\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"data\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Customer\",\n  \"email\": \"testcustomer@example.com\",\n  \"phone\": \"9876543210\",\n  \"address\": \"123 Test Street, Test City\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/customer/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "customer",
+                "add"
+              ]
+            },
+            "description": "Sends a POST request to add a new customer. Requires a valid auth token (obtained from the Login - Valid Credentials request). The `authToken` variable is automatically set after a successful login."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has Status field\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"Status\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/customer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "customer"
+              ]
+            },
+            "description": "Retrieves the list of customers. Requires a valid auth token. Use this to verify the customer was added successfully."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
