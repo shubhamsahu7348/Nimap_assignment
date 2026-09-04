@@ -11,7 +11,7 @@ import org.testng.annotations.*;
 import java.time.Duration;
 
 public class MachineTestAutomation {
-
+ 
     WebDriver driver;
     WebDriverWait wait;
 
