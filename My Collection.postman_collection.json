@@ -10,7 +10,7 @@
   "item": [
     {
       "name": "Get data",
-      "event": [
+      "event": [ 
         {
           "listen": "test",
           "script": {
